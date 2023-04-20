@@ -1,0 +1,17 @@
+h1 {
+  color: green;
+}
+h2 {
+  margin-top: 40px;
+}
+
+button {
+  margin: 5px;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+td {
+  min-width: 100px;
+}
