@@ -1,50 +1,81 @@
 import { useState } from 'react'
+import './App.css'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas',
+      number: ''}
   ]) 
-  const [newName, setNewName] = useState('')
+
+  const [newName, setNewName] = useState('');
+  const [newNumber, setNewNumber] = useState('');
+  const [filter, setFilter] = useState('');
 
   const handleSetName = (event) => {
-    console.log(event.target.value);
     setNewName(event.target.value);
+  }
+
+  const handleSetNumber = (event) => {
+    setNewNumber(event.target.value);
   }
 
   // evet.preventDefault() estää lomakkeen lähettämisen ennen nimen tallennusta 'persons' tauluun
   // ilman metosia sivu latautuu heti uudelleen ja nimilista katoaa
   const addName = (event) => {
     event.preventDefault();
-    const personObject = { name: newName };
-    console.log(personObject);
-    console.log(persons);
+    const personObject = { name: newName, number: newNumber };
+    console.log('new Person: ', personObject);
     if (persons.find(person => person.name == personObject.name)) {
       alert(`${newName} is already added to phonebook`)
     } else {
       setPersons(persons.concat(personObject));
       setNewName('');
+      setNewNumber('');
     }
   }
 
-  const listOfNumbers = persons.map(p => <p key={p.name}> {p.name} </p>) 
+  const filterWith = (event) => {
+    setFilter(event.target.value);
+  }
+
+  // filteröinti
+  const ListOfNumbers = ({persons, filter}) => {
+    const numbers = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()));
+    return numbers.map(p => <p key={p.name}> {p.name} {p.number} </p>);
+  }
 
   return (
     <div>
       <h2>Phonebook</h2>
+      Filter shown with
+      <input
+        value={filter}
+        onChange={filterWith}
+      />
+      <h3>Numbers</h3>
+      <ListOfNumbers persons={persons} filter={filter}/>
       <form onSubmit={addName}>
         <div>
-          name: 
-          <input 
-            value={newName}
-            onChange={handleSetName} 
-          />
+          <h4> Add a new </h4>
+          <div>
+            name: 
+            <input 
+              value={newName}
+              onChange={handleSetName} 
+            />
+          </div>
+          <div>
+            number:
+            <input 
+              value={newNumber}
+              onChange={handleSetNumber}
+            />
+          </div>
         </div>
         <div>
           <button type="submit">add</button>
         </div>
       </form>
-      <h2>Numbers</h2>
-      {listOfNumbers}
     </div>
   )
 }
