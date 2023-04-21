@@ -16,8 +16,14 @@ const App = () => {
   const addName = (event) => {
     event.preventDefault();
     const personObject = { name: newName };
-    setPersons(persons.concat(personObject));
-    setNewName('');
+    console.log(personObject);
+    console.log(persons);
+    if (persons.find(person => person.name == personObject.name)) {
+      alert(`${newName} is already added to phonebook`)
+    } else {
+      setPersons(persons.concat(personObject));
+      setNewName('');
+    }
   }
 
   const listOfNumbers = persons.map(p => <p key={p.name}> {p.name} </p>) 
