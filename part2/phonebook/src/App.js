@@ -1,6 +1,46 @@
 import { useState } from 'react'
 import './App.css'
 
+// filteröinti
+const Filter = (props) => {
+return (
+  <div>
+    Filter shown with
+    <input
+      value={props.filter}
+      onChange={props.filterWith}
+    />
+  </div>
+)}
+
+ // yhteystietojen listaus filteröinnin mukaan
+ const ShowNumbers = ({persons, filter}) => {
+  const numbers = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()));
+  return numbers.map(p => <p key={p.name}> {p.name} {p.number} </p>);
+}
+
+// luodaan uusi yhteystieto
+const PersonForm = (props) => {
+  return (
+    <div>
+      <div>
+        name: 
+        <input 
+          value={props.newName}
+          onChange={props.handleSetName} 
+        />
+      </div>
+      <div>
+        number:
+        <input 
+          value={props.newNumber}
+          onChange={props.handleSetNumber}
+        />
+      </div>
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas',
@@ -38,39 +78,26 @@ const App = () => {
     setFilter(event.target.value);
   }
 
-  // filteröinti
-  const ListOfNumbers = ({persons, filter}) => {
-    const numbers = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()));
-    return numbers.map(p => <p key={p.name}> {p.name} {p.number} </p>);
-  }
+ 
 
   return (
     <div>
       <h2>Phonebook</h2>
-      Filter shown with
-      <input
-        value={filter}
-        onChange={filterWith}
+      <Filter 
+        filter={filter}
+        filterWith={filterWith}
       />
       <h3>Numbers</h3>
-      <ListOfNumbers persons={persons} filter={filter}/>
+      <ShowNumbers persons={persons} filter={filter}/>
       <form onSubmit={addName}>
         <div>
           <h4> Add a new </h4>
-          <div>
-            name: 
-            <input 
-              value={newName}
-              onChange={handleSetName} 
-            />
-          </div>
-          <div>
-            number:
-            <input 
-              value={newNumber}
-              onChange={handleSetNumber}
-            />
-          </div>
+          <PersonForm 
+            newName={newName}
+            handleSetName={handleSetName}
+            newNumber={newNumber}
+            handleSetNumber={handleSetNumber}
+          />
         </div>
         <div>
           <button type="submit">add</button>
