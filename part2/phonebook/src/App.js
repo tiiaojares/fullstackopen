@@ -1,5 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
+import axios from 'axios';
+
+//tehtävät 2.11
 
 // filteröinti
 const Filter = (props) => {
@@ -42,14 +45,21 @@ const PersonForm = (props) => {
 }
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas',
-      number: ''}
-  ]) 
-
+  
+  const [persons, setPersons] = useState([]); 
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+
+  // haetaan personit ja sijoitetaan ne tilaan
+  useEffect(() => {
+    console.log('effect');
+    axios
+      .get('http://localhost:3001/persons').then(response => {
+        console.log('promise fulfilled');
+        setPersons(response.data);
+      })
+  }, [])
 
   const handleSetName = (event) => {
     setNewName(event.target.value);
@@ -78,10 +88,12 @@ const App = () => {
     setFilter(event.target.value);
   }
 
- 
+  const style={
+    marginLeft: '30px',
+  }
 
   return (
-    <div>
+    <div style={style}>
       <h2>Phonebook</h2>
       <Filter 
         filter={filter}

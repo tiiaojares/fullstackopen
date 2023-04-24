@@ -5,6 +5,10 @@ import Course from './Course';
 // tehtävät 2.1-2.5:
 
 const App = () => {
+  const style={
+    marginLeft: '20px',
+  }
+
   const courses = [
     {
       name: 'Half Stack application development',
@@ -47,7 +51,8 @@ const App = () => {
 
 
   return (
-  <div>
+    
+  <div style={style}>
     <h1> Web development curriculum </h1>
     <Course courses={courses} />
   </div>
