@@ -3,7 +3,7 @@ import './App.css'
 import axios from 'axios';
 import personService from './services/persons';
 
-//tehtävät 2.12-2.15
+//tehtävät 2.16-2.17
 
 
 // filteröinti
@@ -51,12 +51,33 @@ const PersonForm = (props) => {
   )
 }
 
+
+const Notification = ({ successMessage, errorMessage }) => {
+  if (successMessage === null && errorMessage === null) {
+    return null;
+  }
+  if (successMessage !== null) {
+    return (
+      <div className="successInfo">
+        {successMessage}
+      </div>
+    )
+  }
+  return (
+    <div className="errorInfo">
+      {errorMessage}
+    </div>
+  )
+}
+
 const App = () => {
   
   const [persons, setPersons] = useState([]); 
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   // haetaan personit ja sijoitetaan ne tilaan
   useEffect(() => {
@@ -75,6 +96,7 @@ const App = () => {
     setNewNumber(event.target.value);
   }
 
+
   // evet.preventDefault() estää lomakkeen lähettämisen ennen nimen tallennusta 'persons' tauluun
   // ilman metosia sivu latautuu heti uudelleen ja nimilista katoaa
   const addPerson = (event) => {
@@ -91,6 +113,10 @@ const App = () => {
             .then(response => {
               setPersons(persons.map(person => person.id !== id ? person : response.data))
             })
+            setSuccessMessage(`${name}'s number has been replaced`);
+            setTimeout(() => {
+              setSuccessMessage(null)
+            }, 5000)
         }
       
     } else {
@@ -101,6 +127,10 @@ const App = () => {
           setNewName('');
           setNewNumber('');
         })
+        setSuccessMessage(`Added new person to the phonebook: ${personObject.name}`);
+        setTimeout(() => {
+          setSuccessMessage(null)
+        }, 5000);
     }
   }
 
@@ -110,7 +140,20 @@ const App = () => {
       console.log("poistetaan henkilö: ", deletePerson);
       personService
         .deletePerson(deletePerson.id)
-        .then(setPersons(persons.filter(person => person.id !== deletePerson.id)))
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== deletePerson.id))
+          setSuccessMessage(`Deleted ${deletePerson.name}`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
+        })
+        .catch(error => {
+          setErrorMessage(`the person ${deletePerson.name} was already deleted from server`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000);
+          setPersons(persons.filter(person => person.id !== deletePerson.id))
+        })
     }
   }
 
@@ -125,6 +168,7 @@ const App = () => {
   return (
     <div style={style}>
       <h2>Phonebook</h2>
+      <Notification successMessage={successMessage} errorMessage={errorMessage} />
       <Filter 
         filter={filter}
         filterWith={filterWith}

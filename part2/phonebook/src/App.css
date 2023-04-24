@@ -15,20 +15,45 @@ p {
   display: inline;
 }
 .deleteButton {
-  text-align: right;
+  background-color: rgb(222, 3, 3);
   margin-right: 25px;
   border-color: red;
   font-weight: bold;
+  color: white;
 }
+
 button {
+  background-color: rgb(3, 119, 3);;
   margin-bottom: 20px;
   padding: 7px;
   padding-right: 15px;
   padding-left: 15px;
   border-radius: 6px;
-  border-color: green;
+  border-color: rgb(1, 166, 1);
+  font-weight: bold;
+  color: white;
 }
 button:hover {
   cursor: pointer;
 }
 
+.errorInfo {
+  border-style: solid;
+  width: 50%;
+  border-color: red;
+  color: red;
+  font-weight: bolder;
+  border-radius: 2px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+.successInfo {
+  border-style: solid;
+  width: 50%;
+  border-color: green;
+  border-radius: 2px;
+  padding: 10px;
+  margin-bottom: 15px;
+  color: green;
+  font-weight: bolder;
+}
