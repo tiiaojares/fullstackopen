@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import axios from 'axios';
+import personService from './services/persons';
 
-//tehtävät 2.11
+//tehtävät 2.12-2.15
+
 
 // filteröinti
 const Filter = (props) => {
@@ -17,9 +19,14 @@ return (
 )}
 
  // yhteystietojen listaus filteröinnin mukaan
- const ShowNumbers = ({persons, filter}) => {
+ const ShowNumbers = ({persons, filter, deleteInformation}) => {
   const numbers = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()));
-  return numbers.map(p => <p key={p.name}> {p.name} {p.number} </p>);
+  return numbers.map(p => 
+  <div key={p.id}>
+    <button className="deleteButton" onClick={() => deleteInformation(p)}>delete</button> 
+    <p> {p.name} {p.number} </p>
+  </div>
+  );
 }
 
 // luodaan uusi yhteystieto
@@ -53,10 +60,9 @@ const App = () => {
 
   // haetaan personit ja sijoitetaan ne tilaan
   useEffect(() => {
-    console.log('effect');
-    axios
-      .get('http://localhost:3001/persons').then(response => {
-        console.log('promise fulfilled');
+    personService
+      .getAll()
+      .then(response => {
         setPersons(response.data);
       })
   }, [])
@@ -71,16 +77,40 @@ const App = () => {
 
   // evet.preventDefault() estää lomakkeen lähettämisen ennen nimen tallennusta 'persons' tauluun
   // ilman metosia sivu latautuu heti uudelleen ja nimilista katoaa
-  const addName = (event) => {
+  const addPerson = (event) => {
     event.preventDefault();
     const personObject = { name: newName, number: newNumber };
     console.log('new Person: ', personObject);
-    if (persons.find(person => person.name == personObject.name)) {
-      alert(`${newName} is already added to phonebook`)
+    const findPerson = persons.find(person => person.name === personObject.name);
+    if (findPerson) {
+      const id = findPerson.id;
+      const name = findPerson.name;
+      if (window.confirm(`${name} is already added to phonebook, replace the old number with a new one?`)) {
+          personService
+            .update(id, personObject)
+            .then(response => {
+              setPersons(persons.map(person => person.id !== id ? person : response.data))
+            })
+        }
+      
     } else {
-      setPersons(persons.concat(personObject));
-      setNewName('');
-      setNewNumber('');
+      personService
+        .create(personObject)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setNewName('');
+          setNewNumber('');
+        })
+    }
+  }
+
+  // poistaa henkilön tiedot listalta
+  const deleteInformation = deletePerson => {
+    if (window.confirm(`Delete ${deletePerson.name}?`)) {
+      console.log("poistetaan henkilö: ", deletePerson);
+      personService
+        .deletePerson(deletePerson.id)
+        .then(setPersons(persons.filter(person => person.id !== deletePerson.id)))
     }
   }
 
@@ -100,8 +130,8 @@ const App = () => {
         filterWith={filterWith}
       />
       <h3>Numbers</h3>
-      <ShowNumbers persons={persons} filter={filter}/>
-      <form onSubmit={addName}>
+      <ShowNumbers persons={persons} filter={filter} deleteInformation={deleteInformation}/>
+      <form onSubmit={addPerson}>
         <div>
           <h4> Add a new </h4>
           <PersonForm 
@@ -117,6 +147,7 @@ const App = () => {
       </form>
     </div>
   )
-}
+  }
+
 
 export default App

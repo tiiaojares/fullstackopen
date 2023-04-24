@@ -11,5 +11,24 @@ h4 {
   border-top: 1px solid green;
 }
 
-
+p {
+  display: inline;
+}
+.deleteButton {
+  text-align: right;
+  margin-right: 25px;
+  border-color: red;
+  font-weight: bold;
+}
+button {
+  margin-bottom: 20px;
+  padding: 7px;
+  padding-right: 15px;
+  padding-left: 15px;
+  border-radius: 6px;
+  border-color: green;
+}
+button:hover {
+  cursor: pointer;
+}
 
