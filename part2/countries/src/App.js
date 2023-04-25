@@ -20,7 +20,6 @@ const ShowCountries = ({countries, filter }) => {
     setCountry(null);
   }
 
-
   if (list.length > 10) {
     return <p className="italicText"> Too many matches, specify another filter </p>
   }
@@ -29,55 +28,40 @@ const ShowCountries = ({countries, filter }) => {
     return <p className="italicText"> No matches </p>
   }
 
-
+  let oneCountry;
   if (list.length == 1) {
-    const country = list[0];
-    const flagUrl = country.flags.png;
-    const languageKeys = Object.keys(country.languages)
-    const language = languageKeys.map(l => 
-      <li key={l}> {country.languages[l]} </li>
-    )
-    return list.map( c =>
-      <div key={c.name.common}>
-        <p id="countryName"> {c.name.common} </p>
-        <p> Capital: {c.capital[0]} </p>
-        <p> Area: {c.area} </p>
-        <p> Languages: {language} </p>
-        <img id="flagImg" src={flagUrl} />
-        <div>
-        <Weather country={c} />
-        </div>
+      oneCountry = list[0]
+  } else if (selectedCountry) {
+      oneCountry = selectedCountry
+  } else {
+    return list.map(c => 
+      <div key={c.name.official}>
+        <p className="countries"> {c.name.common} </p>
+        <button onClick={() => select(c)} > show </button>
       </div>
     )
   }
 
-  if (selectedCountry) {
-    const languageKeys = Object.keys(selectedCountry.languages)
-    const language = languageKeys.map(l => 
-      <li key={l}> {selectedCountry.languages[l]} </li>
-    )
-    return (
-      <div key={selectedCountry.name.common}>
-      <p id="countryName"> {selectedCountry.name.common} </p>
-        <p> Capital: {selectedCountry.capital[0]} </p>
-        <p> Area: {selectedCountry.area} </p>
-        <p> Languages: {language} </p>
-        <img src={selectedCountry.flags.png}  />
-        <div>
-          <Weather country={selectedCountry} />
-        </div>
-        
-        <button onClick={() => showAll()}> return </button>
-    </div>
-    )}
+  const languageKeys = Object.keys(oneCountry.languages)
+  const language = languageKeys.map(l => 
+    <li key={l}> {oneCountry.languages[l]} </li>
+  )
 
-  return list.map(c => 
-    <div key={c.name.official}>
-      <p className="countries"> {c.name.common} </p>
-      <button onClick={() => select(c)} > show </button>
+  return (
+    <div key={oneCountry.name.common}>
+      <p id="countryName"> {oneCountry.name.common} </p>
+      <p> Capital: {oneCountry.capital[0]} </p>
+      <p> Area: {oneCountry.area} </p>
+      <p> Languages: {language} </p>
+      <img src={oneCountry.flags.png}  />
+      <div>
+        <Weather country={oneCountry} />
+      </div>
+      <button onClick={() => showAll()}> return </button>
     </div>
   )
- } 
+}
+ 
 
 function App() {
   const[countries, setCountries] = useState([]);
