@@ -29,6 +29,7 @@ const ShowCountries = ({countries, filter }) => {
     return <p className="italicText"> No matches </p>
   }
 
+
   if (list.length == 1) {
     const country = list[0];
     const flagUrl = country.flags.png;
@@ -53,14 +54,14 @@ const ShowCountries = ({countries, filter }) => {
   if (selectedCountry) {
     const languageKeys = Object.keys(selectedCountry.languages)
     const language = languageKeys.map(l => 
-      <li> {selectedCountry.languages[l]} </li>
+      <li key={l}> {selectedCountry.languages[l]} </li>
     )
     return (
       <div key={selectedCountry.name.common}>
       <p id="countryName"> {selectedCountry.name.common} </p>
         <p> Capital: {selectedCountry.capital[0]} </p>
         <p> Area: {selectedCountry.area} </p>
-        <p> languages:  </p>
+        <p> Languages: {language} </p>
         <img src={selectedCountry.flags.png}  />
         <div>
           <Weather country={selectedCountry} />
@@ -72,11 +73,11 @@ const ShowCountries = ({countries, filter }) => {
 
   return list.map(c => 
     <div key={c.name.official}>
-      <p> {c.name.common} </p>
+      <p className="countries"> {c.name.common} </p>
       <button onClick={() => select(c)} > show </button>
     </div>
   )
-}
+ } 
 
 function App() {
   const[countries, setCountries] = useState([]);

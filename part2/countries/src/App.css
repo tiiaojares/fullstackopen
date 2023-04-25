@@ -34,3 +34,11 @@ p {
 #iconImg {
     margin-top: 10px;
 }
+.countries {
+    display: inline;
+    margin-right: 10px;
+    margin-top: 20px;
+}
+button {
+    margin-top: 20px;
+}
