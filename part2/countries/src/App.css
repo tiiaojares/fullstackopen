@@ -1,0 +1,36 @@
+h2{
+    color: rgb(101, 101, 101);
+}
+h3 {
+    margin-top: 50px;
+    font-size: 21px;
+    border-bottom: 1px solid blue;
+
+}
+
+input {
+    padding: 9px;
+    border-radius: 9px;
+    border-color: rgb(206, 203, 203);
+    font-size: 18px;
+}
+.italicText {
+    margin-top: 25px;
+    font-size: 20px;
+    font-style: italic;
+}
+#countryName {
+    margin-top: 50px;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+p {
+    font-size: 20px;
+}
+#flagImg {
+    margin-top: 40px;
+}
+#iconImg {
+    margin-top: 10px;
+}
