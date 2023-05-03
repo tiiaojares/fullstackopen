@@ -3,26 +3,32 @@ import './App.css'
 import axios from 'axios';
 import personService from './services/persons';
 
-//tehtävät 2.16-2.17
+//tehtävät 3.19-3.21
 
 
 // filteröinti
 const Filter = (props) => {
-return (
-  <div>
-    Filter shown with
-    <input
-      value={props.filter}
-      onChange={props.filterWith}
-    />
+  if (props === null || undefined) {
+    return null;
+  }
+  return (
+  <div className="filterColumn">
+    <p className="column3"> Filter shown with </p>
+    <div className="column4">
+      <input
+        value={props.filter}
+        onChange={props.filterWith}
+      />
+    </div>
   </div>
 )}
 
  // yhteystietojen listaus filteröinnin mukaan
  const ShowNumbers = ({persons, filter, deleteInformation}) => {
+  console.log("persons: ", persons)
   const numbers = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()));
   return numbers.map(p => 
-  <div key={p.id}>
+  <div className="numberRow" key={p.id}>
     <button className="deleteButton" onClick={() => deleteInformation(p)}>delete</button> 
     <p> {p.name} {p.number} </p>
   </div>
@@ -34,18 +40,22 @@ const PersonForm = (props) => {
   return (
     <div>
       <div>
-        name: 
-        <input 
-          value={props.newName}
-          onChange={props.handleSetName} 
-        />
+        <p className="column1"> name: </p> 
+        <div className="column2">
+          <input
+            value={props.newName}
+            onChange={props.handleSetName} 
+          />
+        </div>
       </div>
       <div>
-        number:
-        <input 
-          value={props.newNumber}
-          onChange={props.handleSetNumber}
-        />
+        <p className="column1"> number: </p>
+        <div className="column2">
+          <input 
+            value={props.newNumber}
+            onChange={props.handleSetNumber}
+          />
+        </div>
       </div>
     </div>
   )
@@ -84,7 +94,8 @@ const App = () => {
     personService
       .getAll()
       .then(response => {
-        setPersons(response.data);
+        console.log("response: ", response)
+        setPersons(response);
       })
   }, [])
 
@@ -98,7 +109,7 @@ const App = () => {
 
 
   // evet.preventDefault() estää lomakkeen lähettämisen ennen nimen tallennusta 'persons' tauluun
-  // ilman metosia sivu latautuu heti uudelleen ja nimilista katoaa
+  // ilman metodia sivu latautuu heti uudelleen ja nimilista katoaa
   const addPerson = (event) => {
     event.preventDefault();
     const personObject = { name: newName, number: newNumber };
@@ -126,11 +137,18 @@ const App = () => {
           setPersons(persons.concat(response.data))
           setNewName('');
           setNewNumber('');
+          setSuccessMessage(`Added new person to the phonebook: ${personObject.name}`);
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000);
         })
-        setSuccessMessage(`Added new person to the phonebook: ${personObject.name}`);
-        setTimeout(() => {
-          setSuccessMessage(null)
-        }, 5000);
+        .catch(error => {
+          setErrorMessage(error.response.data.error);
+          console.log(error.response.data.error);
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000);
+        })
     }
   }
 
@@ -173,8 +191,10 @@ const App = () => {
         filter={filter}
         filterWith={filterWith}
       />
-      <h3>Numbers</h3>
-      <ShowNumbers persons={persons} filter={filter} deleteInformation={deleteInformation}/>
+      <div>
+        <h3>Numbers</h3>
+        <ShowNumbers persons={persons} filter={filter} deleteInformation={deleteInformation}/>
+      </div>
       <form onSubmit={addPerson}>
         <div>
           <h4> Add a new </h4>
